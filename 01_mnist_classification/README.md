@@ -7,7 +7,7 @@
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Status](https://img.shields.io/badge/Status-Completed%20%E2%9C%85-success)](#)
 
-> An end-to-end Computer Vision foundational project classifying handwritten digits (0–9) using a Multi-Layer **Artificial Neural Network (ANN)** built with **TensorFlow / Keras**. This project marks the foundational entry into deep learning, exploring image flattening, pixel normalization, parameter mathematics, and multi-class probability estimation.
+> An end-to-end Computer Vision foundational project classifying handwritten digits (0–9) using a Multi-Layer **Artificial Neural Network (ANN)** built with **TensorFlow / Keras**. This project explores image flattening, pixel normalization, parameter mathematics, and multi-class probability estimation.
 
 ---
 
@@ -21,13 +21,13 @@
 
 ## 📌 Project Overview & Highlights
 
-* **Dataset:** Standard MNIST dataset consisting of **70,000 grayscale images** ($28 \times 28$ resolution) of handwritten digits from 0 to 9.
-  * **Training Split:** 60,000 images (with 20% reserved for real-time validation).
-  * **Testing Split:** 10,000 unseen images for honest evaluation.
-* **Lightweight ANN Architecture:** Designed an efficient 3-layer sequential network (`Flatten` $\to$ `Dense(128, ReLU)` $\to$ `Dense(10, Softmax)`).
-* **Parameter Precision:** Total trainable parameters: **101,770** weights and biases.
-* **Peak Test Accuracy:** Achieved **~97.8% Accuracy** on unseen test digits within just 10 training epochs.
-* **Visual Inspection:** Visualized test predictions against ground-truth labels and plotted training vs. validation loss/accuracy curves.
+* **Dataset:** MNIST dataset consisting of **70,000 grayscale images** ($28 \times 28$ resolution) of handwritten digits from 0 to 9.
+  * **Training Set:** 60,000 images (with 20% reserved for validation during training).
+  * **Testing Set:** 10,000 unseen images for unbiased test evaluation.
+* **Lightweight ANN Architecture:** Sequential network (`Flatten` $\to$ `Dense(128, ReLU)` $\to$ `Dense(10, Softmax)`).
+* **Parameter Mathematics:** Total trainable parameters: **101,770** weights and biases.
+* **Accuracy:** Consistently achieves **~97% Test Accuracy** on unseen test digits within 10 training epochs.
+* **Visual Inspection:** Visualizes sample predictions and plots training vs. validation loss/accuracy curves.
 
 ---
 
@@ -74,26 +74,13 @@ Raw pixels range from $0$ to $255$. When unnormalized values enter matrix multip
 
 ### 3. Sparse Categorical Crossentropy vs Categorical Crossentropy
 * We selected **`sparse_categorical_crossentropy`** because our labels are integer targets ($y \in \{0, 1, 2, \dots, 9\}$).
-* If labels were one-hot encoded vectors (e.g., $[0, 0, 1, 0, \dots, 0]$), standard `categorical_crossentropy` would be required. `sparse_categorical_crossentropy` saves memory by avoiding 70,000 one-hot vector allocations.
-
----
-
-## 📊 Experimental Results
-
-| Metric | Training Set | Validation Set | Unseen Test Set (10k images) |
-| :--- | :---: | :---: | :---: |
-| **Loss** | 0.0284 | 0.0892 | **0.0831** |
-| **Accuracy** | 99.15% | 97.45% | **97.80%** |
-
-### 📈 Learning Trajectory
-* **Epochs 1–3:** Rapid convergence as the hidden layer learns primary stroke directions and loops.
-* **Epochs 4–10:** Fine-tuning weights; validation loss stabilizes around ~0.085 without severe divergence.
+* If labels were one-hot encoded vectors (e.g., $[0, 0, 1, 0, \dots, 0]$), standard `categorical_crossentropy` would be required. `sparse_categorical_crossentropy` saves memory by avoiding one-hot vector allocations across thousands of samples.
 
 ---
 
 ## 💡 The Big Question: Why Move from ANN to CNN?
 
-While this ANN achieved an impressive **~97.8% accuracy**, it reveals the fundamental limitation of standard Multi-Layer Perceptrons for Computer Vision:
+While this ANN achieves an impressive **~97% test accuracy** on MNIST, it highlights the fundamental limitation of standard Multi-Layer Perceptrons for Computer Vision:
 
 | Feature | Artificial Neural Network (ANN) | Convolutional Neural Network (CNN) |
 | :--- | :--- | :--- |

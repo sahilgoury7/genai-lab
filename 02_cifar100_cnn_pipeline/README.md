@@ -7,7 +7,7 @@
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![Status](https://img.shields.io/badge/Status-Completed%20%E2%9C%85-success)](#)
 
-> An end-to-end Deep Learning Computer Vision pipeline on the challenging **CIFAR-100** dataset (100 real-world fine-grained object categories). This project demonstrates the transition from a naive baseline CNN suffering from massive overfitting to an optimized production-grade CNN regularized with **Data Augmentation**, **Batch Normalization**, **Smart Adaptive Callbacks**, and **Center-Crop Real-World Inference**.
+> An end-to-end Deep Learning Computer Vision pipeline on the challenging **CIFAR-100** dataset (100 real-world fine-grained object categories). This project demonstrates the transition from a baseline CNN to an optimized production-grade CNN regularized with **Data Augmentation**, **Batch Normalization**, **Smart Adaptive Callbacks**, and **Center-Crop Real-World Inference**.
 
 ---
 
@@ -21,14 +21,15 @@
 
 ## 📌 Project Overview & Key Highlights
 
-* **100 Fine-Grained Object Classes:** Classified complex categories with limited training data (only 500 images per class at $32 \times 32$ RGB resolution).
+* **100 Fine-Grained Object Classes:** 50,000 training images and 10,000 test images ($32 \times 32$ RGB resolution) across 100 classes (only 500 images per class).
 * **Deep 3-Block Architecture:** Designed a modular CNN with $32 \to 64 \to 128$ filters, Batch Normalization, MaxPooling, and a regularized Dense classification head (**Total Params: 644,388**).
-* **Diagnosing & Curing Severe Overfitting:**
-  - *Baseline Model:* Hit a massive **38% generalization gap** (Train Acc ~79% vs Val Acc ~41%) and loss explosion ($0.65 \to 3.23$).
-  - *Regularized Model:* Integrated real-time **Data Augmentation** (`RandomFlip`, `RandomRotation`, `RandomZoom`) and smart callbacks (`EarlyStopping`, `ReduceLROnPlateau`), completely curing overfitting ($\text{Val Acc} > \text{Train Acc}$).
-* **32% Test Loss Reduction:** Slashed test loss from **3.16 to 2.1498**.
-* **Top-5 Accuracy of ~71%:** Evaluated beyond Top-1 accuracy to reflect true semantic ranking across 100 classes.
-* **Production Inference Pipeline:** Implemented an aspect-ratio-preserving **Center Crop Preprocessing** pipeline for high-resolution internet images.
+* **Regularization & Callbacks:**
+  - Integrated real-time **Data Augmentation** (`RandomFlip`, `RandomRotation(0.1)`, `RandomZoom(0.1)`).
+  - Used `BatchNormalization` and `Dropout(0.5)` to stabilize gradients.
+  - Applied `EarlyStopping` and `ReduceLROnPlateau` (learning rate dropped from $0.001 \to 0.0005$ at Epoch 18; best weights restored at Epoch 24).
+* **Performance Gain:** Test loss reduced from **2.3337 to 2.1498**, with final Test Accuracy reaching **43.93%** (Model 1: 40.14%).
+* **Top-5 Accuracy:** Achieved **74.63% Top-5 Accuracy** on 10,000 test images.
+* **Production Inference Pipeline:** Implemented aspect-ratio-preserving **Center Crop Preprocessing** for high-resolution internet images.
 
 ---
 
@@ -54,17 +55,17 @@ Input: (32 x 32 x 3) RGB Image
    │
    ▼
 ┌──────────────────────────────────────────────┐
-│  Flatten (2,048 Clues)                       │ ──▶ 1D Feature Vector
+│  Flatten (2,048 Features)                    │ ──▶ 1D Feature Vector
 └──────────────────────────────────────────────┘
    │
    ▼
 ┌──────────────────────────────────────────────┐
-│  Dense(256) + Dropout(0.5)                   │ ──▶ 524,544 Parameters
+│  Dense(256, ReLU) + Dropout(0.5)             │ ──▶ 524,544 Parameters
 └──────────────────────────────────────────────┘
    │
    ▼
 ┌──────────────────────────────────────────────┐
-│  Dense(100, activation='softmax')            │ ──▶ Probabilities (Sum = 1.0)
+│  Dense(100, Softmax)                         │ ──▶ 100 Class Probabilities
 └──────────────────────────────────────────────┘
 ```
 
@@ -91,35 +92,38 @@ Input: (32 x 32 x 3) RGB Image
 
 ## 🥊 Model 1 (Baseline) vs Model 2 (Augmented Pro) Benchmark
 
-| Metric | Model 1: Baseline CNN | Model 2: Augmented Pro CNN | Impact / Resolution |
+*(Exact figures from the executed notebook)*
+
+| Metric | Model 1: Baseline CNN (10 Epochs) | Model 2: Augmented Pro (25 Epochs + Callbacks) | Key Difference |
 | :--- | :---: | :---: | :--- |
-| **Data Augmentation** | None | `RandomFlip`, `RandomRotation(0.1)`, `RandomZoom(0.1)` | Synthesizes novel views every epoch |
-| **Smart Callbacks** | None | `EarlyStopping` + `ReduceLROnPlateau` | Epoch 18: LR dropped $0.001 \to 0.0005$; Best weights saved |
-| **Training Accuracy** | $79.15\%$ *(Overfit)* | $\mathbf{39.24\%}$ *(Honest learning)* | Model prevented from brute-force memorization |
-| **Validation Accuracy**| $41.33\%$ | $\mathbf{42.96\%}$ | **Generalization Restored** ($\text{Val} > \text{Train}$) |
-| **Final Test Loss** | $3.1635$ 💥 | $\mathbf{2.1498}$ 📉 | **32% Error Reduction** |
-| **Final Test Accuracy**| $42.50\%$ | $\mathbf{43.93\%}$ | Robust performance across all test subsets |
-| **Top-5 Accuracy** | ~66% | $\mathbf{71.4\%}$ | High semantic relevance among top predictions |
+| **Data Augmentation** | None | `RandomFlip`, `RandomRotation(0.1)`, `RandomZoom(0.1)` | Prevents memorization of exact pixel locations |
+| **Learning Rate Schedule**| Fixed ($0.001$) | Adaptive (`ReduceLROnPlateau`: $0.001 \to 0.0005$ at Epoch 18) | Fine-tunes loss surface convergence |
+| **Weight Checkpointing** | None (last epoch) | `EarlyStopping` (Best weights restored at Epoch 24) | Avoids degradation from late epochs |
+| **Training Accuracy** | $40.80\%$ | $39.24\%$ | Regularization prevents overconfident memorization |
+| **Validation Accuracy**| $40.34\%$ | $\mathbf{42.96\%}$ (Epoch 24) | Improved generalization on unseen validation data |
+| **Final Test Loss** | $2.3337$ | $\mathbf{2.1498}$ | **Test loss reduced by 0.1839** |
+| **Final Test Accuracy**| $40.14\%$ | $\mathbf{43.93\%}$ | **+3.79% absolute gain** |
+| **Top-5 Accuracy** | — | $\mathbf{74.63\%}$ | Almost 3 out of 4 times, true class is in Top-5 |
 
 ---
 
-## 🔬 Real-World Case Studies & Engineering Insights
+## 🔬 Real-World Case Studies from Notebook
 
 ### 1. The "Sea vs Television" Case Study (Context Bias)
-* **Ground Truth:** Class 71 $\implies$ `sea` (Blue ocean visible between two vertical tree trunks).
-* **Model 1 Prediction:** Class 87 $\implies$ `television` (**84.44% confidence** ❌).
-* **Root Cause Analysis:** The baseline model saw dark vertical tree trunks as a TV bezel framing bright blue water as a TV screen.
-* **Model 2 Remedy:** With data augmentation, camera angles and boundaries shifted dynamically—dropping the blind overconfidence on television by nearly half (**47.2%**).
+* **Image Tested:** Test image #10.
+* **Ground Truth:** Class 71 $\implies$ `sea` (Blue water between vertical dark tree trunks).
+* **Model 1 Output:** Predicted Class 87 $\implies$ `television` with **73.70% confidence** ❌ (trunks mistaken for a television frame).
+* **Model 2 Output:** With augmentation breaking rigid edge alignments, blind confidence on `television` dropped to **47.21%**, and natural background features began entering the candidate distribution.
 
 ### 2. Real-World Internet Image Inference (Center Crop vs Direct Resize)
 Testing on an external high-resolution Apple photo downloaded from the web:
-* **Direct Resize ($32 \times 32$):** Squashed the aspect ratio and filled 80% of the canvas with floor background. The model predicted `cockroach` ($17.2\%$).
-* **Center Crop ($32 \times 32$):** Discarded surrounding background noise and centered the fruit. The false cockroach detection vanished, and `apple` shot straight into the **Top 3 predictions**!
+* **Direct Resize ($32 \times 32$):** Distorted aspect ratio and surrounded the fruit with large background floor area $\implies$ predicted `cockroach` ($17.2\%$).
+* **Center Crop ($32 \times 32$):** Cropped the central region, preserving fruit geometry $\implies$ false cockroach prediction eliminated, and `apple` surged into the **Top 3 predictions**.
 
 ### 3. CIFAR-100 Dataset Vocabulary Nuance
 When testing photos of a *Cat* and a *Car*:
 * The model predicted `fox` for a cat, and `motorcycle` for a car.
-* **Explanation:** Domestic `cat` and consumer `automobile/car` are **not** part of CIFAR-100's 100 classes (CIFAR-100 contains wild carnivores like `fox`, `wolf`, `lion`, and vehicles like `bus`, `pickup_truck`, `motorcycle`). The CNN extracted the right features (whiskers, fur, wheels) and mapped them to the nearest semantic neighbors in its vocabulary!
+* **Explanation:** Domestic `cat` and consumer `car/automobile` do not exist in CIFAR-100 classes (which has wild carnivores like `fox`, `wolf`, `lion` and vehicles like `bus`, `pickup_truck`, `motorcycle`). The CNN extracted the correct morphological features (fur/whiskers, wheels/chassis) and mapped them to the closest semantic classes in its 100-class vocabulary.
 
 ---
 
