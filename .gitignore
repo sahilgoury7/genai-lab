@@ -1,0 +1,10 @@
+﻿# Personal Developer Notes (Private - Local Only)
+*DEV_NOTES*.md
+*.dev_notes.*
+
+# Jupyter & Python Cache
+.ipynb_checkpoints/
+__pycache__/
+*.py[cod]
+*$py.class
+.env

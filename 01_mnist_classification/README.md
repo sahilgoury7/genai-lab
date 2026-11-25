@@ -16,7 +16,6 @@
 * **Developer:** [Sahil Goury](https://www.linkedin.com/in/sahil-goury-269107370/)
 * **Repository:** [github.com/sahilgoury7/genai-lab](https://github.com/sahilgoury7/genai-lab)
 * **Interactive Notebook:** [Run Live on Google Colab](https://colab.research.google.com/github/sahilgoury7/genai-lab/blob/main/01_mnist_classification/mnist_classification.ipynb)
-* **Deep Engineering Notes:** [DEV_NOTES.md](./DEV_NOTES.md)
 
 ---
 

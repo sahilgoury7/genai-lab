@@ -15,7 +15,7 @@
 
 | # | Project Name | Domain & Architecture | Key Results / Highlights | Quick Links | Status |
 | :-: | :--- | :--- | :--- | :--- | :-: |
-| **01** | [**MNIST Classification**](./01_mnist_classification) | **Computer Vision (ANN)**<br>3-Layer Sequential (`Flatten` $\to$ `Dense(128)` $\to$ `Dense(10)`) | **97.27% Test Accuracy**<br>Analyzed pixel normalization, parameter math & ANN limits on spatial data. | [📓 Notebook](./01_mnist_classification/mnist_classification.ipynb)<br>[📖 README](./01_mnist_classification/README.md)<br>[🛠️ Dev Notes](./01_mnist_classification/DEV_NOTES.md) | ✅ Completed |
+| **01** | [**MNIST Classification**](./01_mnist_classification) | **Computer Vision (ANN)**<br>3-Layer Sequential (`Flatten` $\to$ `Dense(128)` $\to$ `Dense(10)`) | **97.27% Test Accuracy**<br>Analyzed pixel normalization, parameter math & ANN limits on spatial data. | [📓 Notebook](./01_mnist_classification/mnist_classification.ipynb)<br>[📖 README](./01_mnist_classification/README.md) | ✅ Completed |
 | **02** | [**CIFAR-100 CNN Pipeline**](./02_cifar100_cnn_pipeline) | **Computer Vision (CNN)**<br>3-Block Modular CNN ($32 \to 64 \to 128$) + BatchNorm + Augmentation | **43.93% Top-1 / 74.63% Top-5**<br>Cured 38% overfitting gap; test loss cut to 2.1498; Center-Crop inference. | [📓 Notebook](./02_cifar100_cnn_pipeline/cifar100_project.ipynb)<br>[📖 README](./02_cifar100_cnn_pipeline/README.md) | ✅ Completed |
 | **03** | **Time-Series Stock Predictor** | **Recurrent Networks (RNN / LSTM)**<br>SimpleRNN vs LSTM vs Bi-LSTM | 45-day lookback sliding window regression on Nifty 50 daily market data. | *Coming Soon* | 🚧 In Progress |
 | **04** | **Transformers & Self-Attention** | **NLP & LLM Foundations**<br>Scaled Dot-Product ($Q,K,V$) & Multi-Head | Scratch implementation of Attention mechanics & positional encoding. | *Upcoming* | ⏳ Queued |
@@ -28,9 +28,8 @@
 
 Every project in this repository follows strict production and developer documentation standards:
 1. **Interactive Execution:** 1-click **Open In Colab** badges with pre-executed inline plots and logs.
-2. **Dual-Layer Documentation:**
-   * **`README.md` (Public / Recruiter-Facing):** Problem statement, architecture diagrams, parameter tables, benchmark metrics, and execution instructions.
-   * **`DEV_NOTES.md` (Internal / Engineering-Facing):** Tensor shape transformations, "why this hyperparameter" decision logs, gotchas/failure modes, and technical interview defense.
+2. **Clear Engineering Documentation:**
+   * **`README.md`:** Problem statement, architecture diagrams, parameter breakdown tables, verified benchmark metrics, and execution instructions.
 3. **Data Integrity:** All stated metrics and benchmarks are 100% verified against executed notebook cells.
 
 ---
