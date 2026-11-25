@@ -16,17 +16,19 @@
 * **Developer:** [Sahil Goury](https://www.linkedin.com/in/sahil-goury-269107370/)
 * **Repository:** [github.com/sahilgoury7/genai-lab](https://github.com/sahilgoury7/genai-lab)
 * **Interactive Notebook:** [Run Live on Google Colab](https://colab.research.google.com/github/sahilgoury7/genai-lab/blob/main/01_mnist_classification/mnist_classification.ipynb)
+* **Deep Engineering Notes:** [DEV_NOTES.md](./DEV_NOTES.md)
 
 ---
 
 ## 📌 Project Overview & Highlights
 
 * **Dataset:** MNIST dataset consisting of **70,000 grayscale images** ($28 \times 28$ resolution) of handwritten digits from 0 to 9.
-  * **Training Set:** 60,000 images (with 20% reserved for validation during training).
-  * **Testing Set:** 10,000 unseen images for unbiased test evaluation.
+  * **Training Split:** 48,000 images (from 60,000 training pool with 20% validation split).
+  * **Validation Split:** 12,000 images for real-time generalization tracking.
+  * **Testing Split:** 10,000 unseen images for unbiased test evaluation.
 * **Lightweight ANN Architecture:** Sequential network (`Flatten` $\to$ `Dense(128, ReLU)` $\to$ `Dense(10, Softmax)`).
 * **Parameter Mathematics:** Total trainable parameters: **101,770** weights and biases.
-* **Accuracy:** Consistently achieves **~97% Test Accuracy** on unseen test digits within 10 training epochs.
+* **Accuracy:** Achieved **97.27% Test Accuracy** (Test Loss: **0.1022**) on unseen test digits within 10 training epochs.
 * **Visual Inspection:** Visualizes sample predictions and plots training vs. validation loss/accuracy curves.
 
 ---
@@ -63,6 +65,19 @@
 
 ---
 
+## 📊 Experimental Results
+
+*(Exact figures from the executed notebook)*
+
+| Metric | Training Set (Epoch 10) | Validation Set (Epoch 10) | Unseen Test Set (10k images) |
+| :--- | :---: | :---: | :---: |
+| **Loss** | **0.0168** | **0.1113** | **0.1022** |
+| **Accuracy** | **99.48%** | **97.13%** | **97.27%** |
+
+> 💡 **Training Trajectory Insight:** The lowest validation loss was reached at **Epoch 6 (`val_loss: 0.0844`, `val_accuracy: 97.49%`)**. Past Epoch 6, training loss continued to drop to $0.0168$ while validation loss slightly increased to $0.1113$ — demonstrating the textbook onset of mild overfitting, which can be mitigated with Dropout or EarlyStopping.
+
+---
+
 ## 🔬 Core Deep Learning Concepts Explored
 
 ### 1. Why Pixel Normalization ($X / 255.0$)?
@@ -80,7 +95,7 @@ Raw pixels range from $0$ to $255$. When unnormalized values enter matrix multip
 
 ## 💡 The Big Question: Why Move from ANN to CNN?
 
-While this ANN achieves an impressive **~97% test accuracy** on MNIST, it highlights the fundamental limitation of standard Multi-Layer Perceptrons for Computer Vision:
+While this ANN achieves an impressive **97.27% test accuracy** on MNIST, it highlights the fundamental limitation of standard Multi-Layer Perceptrons for Computer Vision:
 
 | Feature | Artificial Neural Network (ANN) | Convolutional Neural Network (CNN) |
 | :--- | :--- | :--- |
