@@ -1,0 +1,4 @@
+Monthly Learning & AI Budget:
+- Gemini API Testing: 450
+- Domain Name: 850
+- Cloud Hosting: 1200
